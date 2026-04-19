@@ -1,0 +1,14 @@
+name: Verify SonarQube Quality
+description: Verify the quality of the code based on the SonarQube scan results
+inputs:
+  token:
+    description: The token to use to authenticate with SonarQube
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Verify SonarQube Quality
+      uses: sonarsource/sonarqube-quality-gate-action@$cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b # v1.2.0
+      env:
+        SONAR_TOKEN: ${{ inputs.token }}

@@ -1,0 +1,26 @@
+name: Run go tests
+description: Run 'go test' to run unit tests for Go code
+inputs:
+  coverprofile:
+    description: Where to write the test coverage profile for Go
+    default: coverage.out
+    required: false
+  coverpkg:
+    description: Package patterns to restrict coverage output for Go
+    default: './...'
+    required: false
+  covermode:
+    description: Mode in which to report coverage for Go
+    default: atomic
+    required: false
+  source:
+    description: Source files to test for Go
+    default: './...'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run go tests
+      run: go test -v -coverprofile=${{ inputs.coverprofile }} -coverpkg=${{ inputs.coverpkg }} -covermode=${{ inputs.covermode }} ${{ inputs.source }}
+      shell: bash

@@ -1,0 +1,39 @@
+name: Run SonarQube Scan
+description: Run a SonarQube scan to analyze code quality and security
+inputs:
+  token:
+    description: The token to use to authenticate with SonarQube
+    required: true
+  organization:
+    description: The organization in which the project is defined
+    required: true
+  projectKey:
+    description: The key which indicates the project to analyze
+    required: true
+  sourceDir:
+    description: The directory containing the source code to analyze
+    required: false
+    default: '.'
+  coverageExclusions:
+    description: The files to exclude coverage analysis
+    required: false
+    default: '**/*_test.go'
+  goCoverageReportPaths:
+    description: The path to the Go coverage report(s)
+    required: false
+    default: 'coverage.out'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4 # v7.1.0
+      env:
+        SONAR_TOKEN: ${{ inputs.token }}
+      with:
+        args: >
+          -Dsonar.organization=${{ inputs.organization }}
+          -Dsonar.projectKey=${{ inputs.projectKey }}
+          -Dsonar.sources=${{ inputs.sourceDir }}
+          -Dsonar.coverage.exclusions=${{ inputs.coverageExclusions }}
+          -Dsonar.go.coverage.reportPaths=${{ inputs.goCoverageReportPaths }}
