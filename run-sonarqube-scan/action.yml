@@ -30,10 +30,46 @@ inputs:
     description: The path to the Go coverage report(s)
     required: false
     default: 'coverage.out'
-
+  excludedWorkflowPattern:
+    description: A comma-delimited pattern of workflows to exclude from the security scan
+    required: false
+    default: '.github/workflows/inno_*.yaml .github/workflows/inno_*.yml'
+  
 runs:
   using: 'composite'
   steps:
+    - name: Prepare excluded workflow pattern arguments
+      id: excluded_workflow_pattern_args
+      shell: bash
+      run: |
+        # Initialize ignore strings
+        IDS=""
+        ARGS=""
+        COUNT=1
+
+        # loop through the input rules
+        for PATH in ${{ inputs.excludedWorkflowPattern }}; do
+          ID="e$COUNT"
+
+          # build the comma-separated list of IDs
+          if [ -z "$IDS" ]; then 
+            IDS="$ID"
+          else 
+            IDS="$IDS,$ID"
+          fi
+          
+          # build the individual property flag
+          ARGS="$ARGS -Dsonar.issue.ignore.multicriteria.$ID.ruleKey=githubactions:S7637"
+          ARGS="$ARGS -Dsonar.issue.ignore.multicriteria.$ID.resourceKey=${PATH}"
+          
+          COUNT=$((COUNT + 1))
+        done
+
+        if [ ! -z "$IDS" ]; then
+          echo "final_args=-Dsonar.issue.ignore.multicriteria=$IDS $ARGS" >> $GITHUB_OUTPUT
+        else
+          echo "final_args=" >> $GITHUB_OUTPUT
+        fi
     - name: Run SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4 # v7.1.0
       with:
@@ -58,3 +94,4 @@ runs:
               github.ref_name
             ) 
           }}
+          ${{ steps.excluded_workflow_pattern_args.outputs.final_args }}
