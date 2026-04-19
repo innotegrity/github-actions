@@ -10,8 +10,16 @@ inputs:
   projectKey:
     description: The key which indicates the project to analyze
     required: true
+  url:
+    description: The URL of the SonarQube server
+    required: false
+    default: 'https://sonarcloud.io'
   sourceDir:
     description: The directory containing the source code to analyze
+    required: false
+    default: '.'
+  projectBaseDir:
+    description: The base directory of the project
     required: false
     default: '.'
   coverageExclusions:
@@ -28,16 +36,25 @@ runs:
   steps:
     - name: Run SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4 # v7.1.0
-      env:
-        SONAR_TOKEN: ${{ inputs.token }}
-        # Explicitly map the context variables back to the environment
-        GITHUB_REF: ${{ github.ref }}
-        GITHUB_EVENT_NAME: ${{ github.event_name }}
-        GITHUB_REPOSITORY: ${{ github.repository }}
       with:
-        args: >
+        args: >-
+          -Dsonar.host.url=${{ inputs.url }}
+          -Dsonar.token=${{ inputs.token }}
+          -Dsonar.projectBaseDir=${{ inputs.projectBaseDir }}
           -Dsonar.organization=${{ inputs.organization }}
           -Dsonar.projectKey=${{ inputs.projectKey }}
           -Dsonar.sources=${{ inputs.sourceDir }}
           -Dsonar.coverage.exclusions=${{ inputs.coverageExclusions }}
           -Dsonar.go.coverage.reportPaths=${{ inputs.goCoverageReportPaths }}
+          -Dsonar.projectVersion=${{ github.sha }}
+          ${{ github.event_name == 'pull_request' && 
+            format('-Dsonar.pullrequest.key={0} -Dsonar.pullrequest.branch={1} -Dsonar.pullrequest.base={2}', 
+              github.event.pull_request.number, 
+              github.head_ref, 
+              github.base_ref
+            ) 
+            || 
+            format('-Dsonar.branch.name={0}', 
+              github.ref_name
+            ) 
+          }}
