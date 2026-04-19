@@ -72,10 +72,11 @@ runs:
         fi
     - name: Run SonarQube Scan
       uses: sonarsource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4 # v7.1.0
+      env:
+        SONAR_TOKEN: ${{ inputs.token }}
       with:
         args: >-
           -Dsonar.host.url=${{ inputs.url }}
-          -Dsonar.token=${{ inputs.token }}
           -Dsonar.projectBaseDir=${{ inputs.projectBaseDir }}
           -Dsonar.organization=${{ inputs.organization }}
           -Dsonar.projectKey=${{ inputs.projectKey }}
