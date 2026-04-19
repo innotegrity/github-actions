@@ -1,0 +1,48 @@
+name: Wait for Workflow
+description: Wait for a workflow to complete before proceeding
+inputs:
+  github_token:
+    description: GitHub token
+    required: false
+    default: ${{ github.token }}
+  workflow:
+    description: Workflow name.
+    required: true
+  repo:
+    description: Repository name with owner (eg. "ArcticLampyrid/action-wait-for-workflow")
+    required: false
+    default: ${{ github.repository }}
+  sha:
+    description: Commit sha
+    required: false
+    default: 'auto'
+  branch:
+    description: Branch name
+    required: false
+  event:
+    description: Event type
+    required: false
+  wait-interval:
+    description: "Seconds to wait between polling (at least 5 seconds)"
+    required: false
+    default: "30"
+  allowed-conclusions:
+    description: "Array of allowed conclusions"
+    required: false
+    default: |
+      success
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Wait for workflow to complete
+      uses: ArcticLampyrid/action-wait-for-workflow@ff297b23789206858260877c4b83026d90c6db8c # v1.3.0
+      with:
+        github_token: ${{ inputs.github_token }}
+        workflow: ${{ inputs.workflow }}
+        repo: ${{ inputs.repo }}
+        sha: ${{ inputs.sha }}
+        branch: ${{ inputs.branch }}
+        event: ${{ inputs.event }}
+        wait-interval: ${{ inputs.wait-interval }}
+        allowed-conclusions: ${{ inputs.allowed-conclusions }}
