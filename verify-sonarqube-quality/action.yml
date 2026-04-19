@@ -9,6 +9,10 @@ runs:
   using: 'composite'
   steps:
     - name: Verify SonarQube Quality
-      uses: sonarsource/sonarqube-quality-gate-action@$cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b # v1.2.0
+      uses: sonarsource/sonarqube-quality-gate-action@cf038b0e0cdecfa9e56c198bbb7d21d751d62c3b # v1.2.0
       env:
         SONAR_TOKEN: ${{ inputs.token }}
+        # Explicitly map the context variables back to the environment
+        GITHUB_REF: ${{ github.ref }}
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
+        GITHUB_REPOSITORY: ${{ github.repository }}

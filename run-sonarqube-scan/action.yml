@@ -30,6 +30,10 @@ runs:
       uses: sonarsource/sonarqube-scan-action@299e4b793aaa83bf2aba7c9c14bedbb485688ec4 # v7.1.0
       env:
         SONAR_TOKEN: ${{ inputs.token }}
+        # Explicitly map the context variables back to the environment
+        GITHUB_REF: ${{ github.ref }}
+        GITHUB_EVENT_NAME: ${{ github.event_name }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
       with:
         args: >
           -Dsonar.organization=${{ inputs.organization }}

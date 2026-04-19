@@ -3,12 +3,12 @@ description: Run markdownlint to lint Markdown files
 inputs:
   fix:
     description: Whether to fix supported issues automatically (any truthy value enables)
-    default: ''
     required: false
+    default: ''
   globs:
     description: Glob expression(s) of files to lint (newline-delimited)
-    default: '*.{md,mdc}'
     required: false
+    default: '*.{md,mdc}'
 
 runs:
   using: 'composite'
