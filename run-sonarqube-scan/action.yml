@@ -33,7 +33,7 @@ inputs:
   excludedWorkflowPattern:
     description: A comma-delimited pattern of workflows to exclude from the security scan
     required: false
-    default: '.github/workflows/inno_*.yaml .github/workflows/inno_*.yml'
+    default: ''
   
 runs:
   using: 'composite'
