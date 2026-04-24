@@ -93,6 +93,7 @@ runs:
           -Dsonar.projectBaseDir=${{ inputs.projectBaseDir }}
           -Dsonar.organization=${{ inputs.organization }}
           -Dsonar.projectKey=${{ inputs.projectKey }}
+          -Dsonar.projectName=${{ inputs.projectKey }}
           -Dsonar.sources=${{ inputs.sourceDir }}
           -Dsonar.coverage.exclusions=${{ inputs.coverageExclusions }}
           -Dsonar.go.coverage.reportPaths=${{ inputs.goCoverageReportPaths }}
